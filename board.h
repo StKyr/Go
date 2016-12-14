@@ -1,6 +1,9 @@
 #ifndef BOARD_H
 #define BOARD_H
 
+#include "util.h"
+
+
 class Cell{
 public:
 
@@ -53,10 +56,10 @@ public:
 
 private:
     int size;
-    Cell** table;
+    std::vector< std::vector<Cell> > table;
     int occupiedCells;
 
-    Cell getCell(int row, int col){return &board[row][col];}
+    Cell& getCell(const int row,const int col);
 };
 
 #endif // BOARD_H

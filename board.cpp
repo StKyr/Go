@@ -1,5 +1,7 @@
 #include "board.h"
 
+using namespace std;
+
 bool Cell::occupy(const Player& p){
     if (this->occupied) return false;
 
@@ -47,21 +49,17 @@ Player& Cell::getPlayerOwned()const{
 Board::Board(int size)
     :size(size), occupiedCells(0){
 
-    table = new Cell[size];
-    for (int col=0; col<size; col++){
-        table[col] = new Cell[size];
-        for (int row=0; row<size; row++){
-            table[row][col] = new Cell(row, col);
+    table = vector<vector<Cell>>();
+
+    for (int i=0; i<size; i++){
+        table.push_back(vector<Cell>());
+        for (int j=0; j<size; j++){
+            table[j][j] = Cell(i,j);
         }
     }
 }
 
-Board::~Board(){
-    for (int col=0; col<size; coll++){
-        delete[] table[col];
-    }
-    delete[] table;
-}
+Board::~Board(){}
 
 
 int Board::getSize()const{ return size;}
@@ -91,17 +89,25 @@ int Board::countStonesFor(const Player &p)const{
 }
 
 Player& Board::removeStone(const int row, const int col){
-    Cell c = getCell(row,col);
+    Cell& c = getCell(row,col);
     Player& p = c.getPlayerOwned();
     c.free();
     return p;
 }
 
 bool Board::playAt(const int row, const int col, const Player& p){
-    Cell c =getCell(row,col);
+    Cell& c = getCell(row,col);
     if (c.isOccupied()) return false;
 
     c.occupy(p);
     return true;
 }
+
+Cell& Board::getCell(const int row,const int col){
+
+    Cell& c = &table[row][col];
+    _assertNotNull(c);
+    return c;
+}
+
 
