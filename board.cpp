@@ -1,8 +1,9 @@
 #include "board.h"
+#include <string>
 
 using namespace std;
 
-bool Cell::occupy(const Player& p){
+bool Cell::occupy(Player* p){
     if (this->occupied) return false;
 
     this->occupied = true;
@@ -14,11 +15,11 @@ bool Cell::occupy(const Player& p){
 void Cell::free(){
 
     this->occupied = false;
-    this->playerOwned = nullptr;
+    this->playerOwned = NULL;
 }
 
-Player& Cell::changePossession(const Player& newPlayer){
-    Player& oldPlayer = this->playerOwned;
+Player* Cell::changePossession(Player* newPlayer){
+    Player* oldPlayer = this->playerOwned;
 
     this->occupy(newPlayer);
 
@@ -29,7 +30,7 @@ bool Cell::isOccupied()const{
     return this->occupied;
 }
 
-bool Cell::belongsTo(const Player& p)const{
+bool Cell::belongsTo(const Player* p)const{
     return this->playerOwned == p;
 }
 
@@ -41,7 +42,7 @@ int Cell::getColumn()const{
     return this->column_coordinate;
 }
 
-Player& Cell::getPlayerOwned()const{
+Player* Cell::getPlayerOwned()const{
     return playerOwned;
 }
 
@@ -49,12 +50,12 @@ Player& Cell::getPlayerOwned()const{
 Board::Board(int size)
     :size(size), occupiedCells(0){
 
-    table = vector<vector<Cell>>();
+    table = vector< vector<Cell> >();
 
     for (int i=0; i<size; i++){
         table.push_back(vector<Cell>());
         for (int j=0; j<size; j++){
-            table[j][j] = Cell(i,j);
+            table[i].push_back( Cell(i,j) );
         }
     }
 }
@@ -66,16 +67,16 @@ int Board::getSize()const{ return size;}
 bool Board::isFull()const{ return occupiedCells==size*size;}
 bool Board::isEmpty()const{ return occupiedCells==0;}
 
-bool Board::isCellOwnedBy(const int row, const int col, const Player &p) const{
+bool Board::isCellOwnedBy(const int row, const int col, const Player *p){
 
     return getCell(row,col).belongsTo(p);
 }
 
-bool Board::isCellOccupied(const int row, const int col) const{
+bool Board::isCellOccupied(const int row, const int col) {
     return getCell(row,col).isOccupied();
 }
 
-int Board::countStonesFor(const Player &p)const{
+int Board::countStonesFor(const Player *p){
 
     int count=0;
     for (int row=0; row<size; row++){
@@ -88,26 +89,27 @@ int Board::countStonesFor(const Player &p)const{
     return count;
 }
 
-Player& Board::removeStone(const int row, const int col){
+Player* Board::removeStone(const int row, const int col){
     Cell& c = getCell(row,col);
-    Player& p = c.getPlayerOwned();
+    Player* p = c.getPlayerOwned();
     c.free();
     return p;
 }
 
-bool Board::playAt(const int row, const int col, const Player& p){
+bool Board::playAt(const int row, const int col, Player* p){
     Cell& c = getCell(row,col);
-    if (c.isOccupied()) return false;
 
-    c.occupy(p);
-    return true;
+    if (c.isOccupied()){
+      return false;
+    }else{
+      c.occupy(p);
+      return true;
+    }
 }
 
 Cell& Board::getCell(const int row,const int col){
 
-    Cell& c = &table[row][col];
-    _assertNotNull(c);
+    Cell& c = table[row][col];
+    //_assertNotNull(&c);
     return c;
 }
-
-

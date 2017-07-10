@@ -1,27 +1,31 @@
 #ifndef BOARD_H
 #define BOARD_H
 
-#include "util.h"
+#include <vector>
+
+//#include "util.h"
+#include "printer.h"
+#include "player.h"
 
 
 class Cell{
 public:
 
     Cell(int row, int col)
-        :column_coordinate(col), row_coordinate(row), occupied(false), playerOwned(nullptr){
+        :column_coordinate(col), row_coordinate(row), occupied(false), playerOwned(NULL){
     }
     ~Cell(){}
 
-    bool    occupy          (const Player& p);
+    bool    occupy          (Player* p);
     void    free            ();
-    Player& changePossession(const Player& newPlayer);
+    Player* changePossession(Player* newPlayer);
 
     bool    isOccupied      ()const;
-    bool    belongsTo       (const Player& p)const;
+    bool    belongsTo       (const Player* p)const;
 
     int     getRow          ()const;
     int     getColumn       ()const;
-    Player& getPlayerOwned  ()const;
+    Player* getPlayerOwned  ()const;
 
 
 private:
@@ -29,7 +33,7 @@ private:
     int column_coordinate;
 
     bool occupied;
-    Player& playerOwned;
+    Player* playerOwned;
 };
 
 
@@ -37,21 +41,22 @@ private:
 
 
 class Board{
+    friend class Printer;
 public:
 
     Board(int size);
     ~Board();
 
-    bool playAt(const int row, const int col, const Player& p);
-    Player& removeStone(const int row, const int col);
-    int countStonesFor(const Player& p)const;
+    bool    playAt        (const int row, const int col, Player* p);
+    Player* removeStone   (const int row, const int col);
+    int     countStonesFor(const Player* p);
 
-    bool isCellOccupied(const int row, const int col)const;
-    bool isCellOwnedBy(const int row, const int col, const Player& p)const;
-    bool isEmpty()const;
-    bool isFull()const;
+    bool isCellOccupied   (const int row, const int col);
+    bool isCellOwnedBy    (const int row, const int col, const Player* p);
+    bool isEmpty          ()const;
+    bool isFull           ()const;
 
-    int getSize()const;
+    int getSize           ()const;
 
 
 private:

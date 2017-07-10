@@ -1,18 +1,16 @@
-#ifndef UITL_H
-#define UITL_H
+#ifndef UTIL_H
+#define UTIL_H
 
-#include <ostream>
+#include <iostream>
 #include <cstdlib>
 
-namespace util{
 
-    void _assertNotNull(void * obj, ostream out = std::cerr){
-        if (obj == nullptr){
+void _assertNotNull(void * obj, std::ostream out = std::cerr){
+        if (obj == NULL){
             out << "Object "<<obj<<" is NULL."<< std::endl;
 
             exit(666); // todo: change exit to an exception probably
         }
     }
-}
 
-#endif // UITL_H
+#endif // UTIL_H
